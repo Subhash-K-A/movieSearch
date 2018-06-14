@@ -1,0 +1,301 @@
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
+
+        <link rel="stylesheet" type="text/css" href="search.css"> 
+
+        <title>Search Movie</title>
+    </head>
+    <body>
+        <div class="container-fluid outer px-0 mx-0">
+            <div class="row header px-0 mx-0">
+                <div class="col">
+                    <h2 class="text-center">Movie Search<span class="fas fa-search header-icon"></span></h2>
+                </div>
+            </div>
+            <!--Search form-->
+            <div class="row p-0 m-0">
+                <div class="col p-0 m-0">
+                    <div class="jumbotron jumbotron-fluid py-1 m-0">
+                        <form class="px-2">
+                            <div class="form-row align-items-center">
+                                <div class="form-group col-10 col-sm-5 pb-0 mb-0 pb-sm-1 mb-sm-1">
+                                    <label for="title">TITLE</label>
+                                    <input type="text" name="t" aria-activedescendant=""class="form-control" id="title" placeholder="Title" autofocus>
+                                </div>
+                                <div class="col-10 col-sm-1 py-0 my-0">
+                                    <h6 class="form-text text-muted text-center py-0 my-0">
+                                        or
+                                    </h6>
+                                </div>
+                                <div class="form-group col-10 col-sm-6 pb-0 mb-0 pb-sm-1 mb-sm-1">
+                                    <label for="imdbId">IMDB ID</label>
+                                    <input type="text" name="i" class="form-control" id="imdbId" placeholder="Imdb Id   e.g.  tt1285016">
+                                </div>
+                                <small id="input-hint" class="form-text text-muted text-center py-0 my-0">
+                                    Enter the imdb id or title of the movie to search
+                                </small>
+                                <small id="input-alert" class="form-text text-danger text-center py-0 my-0">
+                                    Imdb Id or Title of the movie is required<sup>*</sup>
+                                </small>
+                            </div>
+                            <div class="form-row align-items-center">
+                                <div class="form-group col-8 col-sm-4 col-md-3 col-lg-2 my-1 py-1">
+                                    <label for="year">Year</label>
+                                    <input type="number" name="y" min="1900" max="2018" step="1" class="form-control" id="year" placeholder="Year of Release" maxlength="4">
+                                </div>
+                            </div>
+                            <div class="form-row align-items-center mt-sm-1 py-0 my-0">
+                                <div class="col-auto mx-2">
+                                    <button type="submit" id="submit" class="btn btn-primary" disabled="disabled">Search</button>
+                                </div>
+                                <div class="col-auto mx-2">
+                                    <button type="reset" id="reset" class="btn btn-secondary">Reset</button>
+                                </div>
+                            </div>
+                        </form><!--End of form-->
+                    </div> <!--end of jumbotron-->
+                </div>
+            </div><!--End of Search form row-->
+
+            <!--error alert-->
+
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <p id="error" class="text-danger text-center h6"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--below code is updated if movie is not found-->
+            <div class="row p-0 m-0 align-items-center" id="notFound">
+                <div class="col p-0 m-0">
+                    <p class="text-center text-danger h2"></p>
+                </div>
+            </div>
+
+            <!--if movies are found the movie details are inserted into the below code-->
+            <div class="row py-2 px-0 m-0 no-gutters justify-content-center d-none" id="movie">
+                <div class="col col-sm-9 col-lg-7 col-xl-6 p-0 m-0">
+                    <div class="card">
+                        <div class="card-header p-0 m-0"> <!--card header-->
+                            <div class="row p-0 m-0 mt-2 no-gutters">
+                                <div class="col px-1 py-0 m-0 border-right border-secondary" id="movieDetails">
+                                    <!--Produced by-->
+                                    <div class="text-warning py-0 pl-0 pr-2 m-0 d-inline-block" id="production"></div>
+                                    <span class="text-white arrow"> >> </span>
+                                    <!--Type-->
+                                    <span class="small text-capitalize font-italic text-white" id="type"></span>
+                                    <div class="p-0 m-0" id="titleText">
+                                        <!--Movie Title-->
+                                        <h5 class="text-white d-inline d-sm-none titleText"></h5>
+                                        <h4 class="text-white d-none d-sm-inline titleText"></h4>
+                                        <!--year of release-->
+                                        <span class="h6 releaseYear" id="releaseYear"></span>
+                                    </div>
+                                    <div class="subtext small p-0 m-0 d-sm-none genre genre-head">
+                                        <!--Genre-->
+                                        <p class="genre-text p-0 m-0"></p>
+                                    </div>
+                                </div>
+                                <!--IMDB details-->
+                                <div class="col-auto text-white px-1 py-0 my-0 mx-1 text-center" id="rating">
+                                    <h6 class="text-light text-center p-0 m-0">IMDB</h6>
+                                    <div class="media m-0 pt-1 pb-0 px-0" title="IMDB Rating">
+                                        <span class="align-self-center mr-1 fas fa-star"></span>
+                                        <div class="media-body px-0 mx-0">
+                                            <span class="m-0 p-0" id="imdbRating"></span><span class="m-0 p-0 small text-secondary">/10</span>
+                                            <p class="text-light small p-0 m-0" id="imdbVotes"></p>
+                                        </div>
+                                    </div>
+                                    <small id="imdb-id"> <a href="https://www.imdb.com/title/" target="_blank"></a></small>
+                                </div>
+                            </div>
+                            <!--Movie properties-->
+                            <div class="row p-0 m-0 no-gutters">
+                                <div class="col p-0 m-0">
+                                    <div class="subtext small py-0 m-0">
+                                        <span id="rated" class="border-right border-secondary"></span>
+                                        <span id="runTime" class="border-right border-secondary"></span>
+                                        <span id="genre" class="genre genre-text genre-mid py-0 pl-1 m-0 border-right border-secondary d-none d-sm-inline"></span>
+                                        <span id="language" class="border-right border-secondary"></span>
+                                        <span id="released" class="border-right border-secondary"></span> 
+                                        <span id="country" class="pl-0 ml-0"></span>  
+                                    </div>
+                                </div>                                
+                            </div>    
+                        </div><!--End of card Header-->
+                        <div class="card-body p-0 m-0">
+                            <div class="row p-0 m-0">
+                                <div class="col p-0 m-0">
+                                    <!--Poster image-->
+                                    <img class="card-img-top px-0 pt-1 m-0 img-fluid" id="poster" src="" alt="movie poster">
+                                    <!--Displayed if Poster unavailable-->
+                                    <img class="card-img-top px-0 pt-1 m-0 img-fluid" id="alt-poster" src="images/no-poster.jpg" alt="movie poster">
+                                </div>
+                                <div class="col px-1 py-0 m-0 d-flex flex-column justify-content-around flex-fill aside">
+                                    <!--Plot-->
+                                    <div class="row border-top border-secondary px-0 pt-1 pb-0 m-0 d-none d-lg-block" id="plot-side">
+                                        <div class="col p-0 m-0">
+                                            <p class="p-0 m-0 plot"></p>
+                                        </div>
+                                    </div>
+                                    <!--Metascore Rating-->
+                                    <div class="row border-top border-secondary px-0 py-0 m-0" id="metacritic">
+                                        <div class="col p-0 m-0">
+                                            <div class="px-0 py-0 py-sm-1 m-0">
+                                                <div class="media mx-0 mb-0 mt-1 p-0">
+                                                    <span class="align-self-center mr-1 badge badge-success" id="metacritic-score"></span>
+                                                    <div class="media-body p-0 my-0 mx-0 mx-sm-1">
+                                                        <span class="m-0 p-0 h6 text-white">Metascore</span>
+                                                        <p class="text-light small p-0 m-0">From <a href="http://www.metacritic.com/" target="_blank">metacritic.com
+                                                            </a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Rotten Tomatoes Rating-->
+                                    <div class="row border-top border-secondary px-0 py-0 m-0" id="rotten-tomatoes" >
+                                        <div class="col p-0 m-0">
+                                            <div class="px-0 py-0 m-0">
+                                                <p class="text-center text-white h6 p-0 mx-0 mt-0 mb-1 mb-sm-2">Rotten Tomatoes</p>
+                                                <div class="progress">
+                                                    <div class="progress-bar text-center text-light" role="progressbar"></div>
+                                                </div>
+                                                <a class="small px-1 py-0 m-0" href="www.rottentomatoes.com/" target="_blank">rottentomatoes.com</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Awards-->
+                                    <div class="row border-top border-secondary px-0 py-0 m-0 awards" id="award-side">
+                                        <div class="col p-0 m-0">
+                                            <div class="px-0 py-0 m-0 text-center">
+                                                <p class="text-center text-light p-0 m-1 h6">Awards</p>
+                                                <div class="bg-info text-center px-1 py-2 m-0">
+                                                    <p class="h6 award text-light font-italic"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Box office Collection-->
+                                    <div class="row border-top border-secondary px-0 py-0 m-0" id="box-office">
+                                        <div class="col p-0 m-0">
+                                            <div class="px-0 py-0 mx-0 m-1 text-center">
+                                                <p class="text-center text-light p-0 m-1 h6">Box Office</p>
+                                                <div id="bo-collection" class="text-center p-1 m-0">
+                                                    <p class="badge badge-warning"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--website of the movie-->
+                                    <div class="row border-top border-secondary px-0 py-0 m-0 d-none d-md-inline-block" id="website-side">
+                                        <div class="col p-0 m-0">
+                                            <div class="px-0 py-0 m-0 text-center">
+                                                <p class="px-0 py-2 m-0 website"><a href="#" target="_blank"></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Director-->
+                                    <div class="row border-top border-secondary px-0 py-0 m-0 director dir-side">
+                                        <div class="col p-0 m-0">
+                                            <div class="p-1 members members-side">
+                                                <span class="d-inline-block h6 p-0 m-0"> Director :  </span>
+                                                <span class="text-light list"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Writer-->
+                                    <div class="row border-top border-secondary px-0 py-0 m-0 writer writ-side">
+                                        <div class="col p-0 m-0">
+                                            <div class="p-1 members members-side">
+                                                <span class="d-inline h6"> Writers :</span>
+                                                <span class="d-inline text-light list"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Actor-->
+                                    <div class="row border-top border-secondary px-0 py-0 m-0 actor act-side">
+                                        <div class="col p-0 m-0">
+                                            <div class="p-1 members members-side">
+                                                <span class="d-inline h6"> Actors :</span>
+                                                <span class="d-inline text-light list"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-bottom border-secondary px-0 py-0 m-0 only-bottom"></div>
+                                </div>
+                            </div>
+                            <div class="row p-0 m-0 no-gutters" id="description">
+                                <div class="col px-1 py-1 m-0 text-secondary">
+                                    <!--Plot-->
+                                    <p id="plot-below" class="lead p-0 m-0 plot d-lg-none"></p>  
+                                    <!--Director-->
+                                    <div class="p-1 m-0 members members-bot dir-bot director">
+                                        <span class="d-inline-block h6 p-0 m-0"> Director :  </span>
+                                        <span class="text-primary list"></span>
+                                    </div>
+                                    <!--Writers-->
+                                    <div class="p-1 m-0 members members-bot writ-bot writer">
+                                        <span class="d-inline h6"> Writers :</span>
+                                        <span class="d-inline text-primary list"></span>
+                                    </div>
+                                    <!--Actors-->
+                                    <div class="p-1 m-0 members members-bot act-bot actor">
+                                        <span class="d-inline h6"> Actors :</span>
+                                        <span class="d-inline text-primary list"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--End of card Body-->
+                        <div class="card-footer p-0 m-0">
+                            <!--Awards- Displayed for less than 420px screens-->
+                            <div class="row p-0 m-0 no-gutters awards" id="award-foot">
+                                <div class="col p-0 m-0">
+                                    <div class="h6 bg-info px-0 pb-1 m-0">Awards : <small class="award text-dark p-0 pl-1 m-0"></small></div>
+                                </div>                                
+                            </div> 
+                            <!--DVD release dates-->
+                            <div class="row p-0 m-0 no-gutters dvd-foot">
+                                <div class="col-auto p-0 m-0">
+                                    <p class="text-secondary p-1 m-0 small font-italic">DVD Released on  <span class="dvd text-primary"></p>
+                                </div>
+                            </div> 
+                            <!--Website - Displayed for xs and small screen-->
+                            <div class="row p-0 m-0 no-gutters d-md-none" id="website-foot">
+                                <div class="col p-0 m-0 text-center">
+                                    <small class="p-0 m-0 website"><a href="#" target="_blank"></a></small>
+                                </div>
+                            </div> 
+                        </div> <!--End of card Footer-->
+                    </div><!--End of card-->
+                </div>
+            </div><!--End of movie details-->
+            <div class="row p-0 m-0" id="footer">
+                <div class="col p-2 m-0">
+                    <footer class="text-light small text-center">
+                        <p class="m-0 d-inline-block">Copyright &copy; 2018</p>
+                        <p class="m-0 text-right small float-right">Powered by  <a href="http://www.omdbapi.com/" target="_blank">OMDb API.com</a></p>
+                    </footer>
+                </div>
+            </div>
+
+        </div>
+        <script src="jQuery-3.3.1.min.js"></script>
+        <script src="search.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>
+</html>
